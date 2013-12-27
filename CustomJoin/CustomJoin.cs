@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Hooks;
+using TerrariaApi.Server;
 using Terraria;
 using TShockAPI;
 
 namespace CustomJoin
 {
-	[APIVersion(1, 12)]
+	[ApiVersion(1, 14)]
 	public class CustomJoin : TerrariaPlugin
 	{
 		public override string Name { get { return "CustomJoin"; } }
-		public override string Author { get { return "Scavenger"; } }
+		public override string Author { get { return "Scavenger, updated by Enerdy"; } }
 		public override Version Version { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
 
 		public static cjConfig cfg { get; set; }
@@ -28,29 +28,24 @@ namespace CustomJoin
 
 		public override void Initialize()
 		{
-			GameHooks.Initialize += onInitialize;
-			NetHooks.GetData += onGetData;
-			NetHooks.SendData += onSendData;
-			ServerHooks.Leave += onLeave;
+            Commands.ChatCommands.Add(new Command("customjoin.reload", cjConfig.ReloadConfig, "cjreload"));
+            Commands.ChatCommands.Add(new Command("customjoin.setjoin", CMDsetjoin, "setjoin"));
+            Commands.ChatCommands.Add(new Command("customjoin.setleave", CMDsetleave, "setleave"));
+            cjConfig.LoadConfig();
+
+            ServerApi.Hooks.NetGetData.Register(this, onGetData);
+            ServerApi.Hooks.NetSendData.Register(this, onSendData);
+            ServerApi.Hooks.ServerLeave.Register(this, onLeave);
 		}
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
-				GameHooks.Initialize -= onInitialize;
-				NetHooks.GetData -= onGetData;
-				NetHooks.SendData -= onSendData;
-				ServerHooks.Leave -= onLeave;
+                ServerApi.Hooks.NetGetData.Deregister(this, onGetData);
+                ServerApi.Hooks.NetSendData.Deregister(this, onSendData);
+                ServerApi.Hooks.ServerLeave.Deregister(this, onLeave);
 			}
 			base.Dispose(disposing);
-		}
-
-		void onInitialize()
-		{
-			Commands.ChatCommands.Add(new Command("customjoin.reload", cjConfig.ReloadConfig, "cjreload"));
-			Commands.ChatCommands.Add(new Command("customjoin.setjoin", CMDsetjoin, "setjoin"));
-			Commands.ChatCommands.Add(new Command("customjoin.setleave", CMDsetleave, "setleave"));
-			cjConfig.LoadConfig();
 		}
 
 		void CMDsetjoin(CommandArgs args)
@@ -183,7 +178,7 @@ namespace CustomJoin
 		{
 			try
 			{
-				if (e.MsgID == PacketTypes.ChatText && e.Handled == false && LastJoinIndex > -1)
+				if (e.MsgId == PacketTypes.ChatText && e.Handled == false && LastJoinIndex > -1)
 				{
 					if (LastJoinIndex < TShock.Players.Length && e.text.EndsWith(" has joined.") && e.number2 == Color.Yellow.R && e.number3 == Color.Yellow.G && e.number4 == Color.Yellow.B)
 					{
@@ -219,17 +214,17 @@ namespace CustomJoin
 			catch { }
 		}
 
-		void onLeave(int ply)
+		void onLeave(LeaveEventArgs e)
 		{
 			try
 			{
-				var tsplr = TShock.Players[ply];
+				var tsplr = TShock.Players[e.Who];
 				if (tsplr != null && cfg.CustomMessages.ContainsKey(tsplr.Name) && tsplr.ReceivedInfo)
 				{
 					if (cfg.CustomMessages[tsplr.Name].HideLeave == false && cfg.CustomMessages[tsplr.Name].LeaveMessage == string.Empty) return;
 
 					tsplr.SilentKickInProgress = true;
-					tsplr.State = 1;//Remove in tshock 4.1
+                    //tsplr.State = 1;//Remove in tshock 4.1
 
 					if (cfg.CustomMessages[tsplr.Name].LeaveMessage != string.Empty)
 						TShock.Utils.Broadcast(string.Format(cfg.CustomMessages[tsplr.Name].LeaveMessage, tsplr.Name, tsplr.Country ?? string.Empty), Color.Yellow);

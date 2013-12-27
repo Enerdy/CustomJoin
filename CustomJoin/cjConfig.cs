@@ -15,8 +15,10 @@ namespace CustomJoin
 		public static string cfgPath { get { return Path.Combine(TShock.SavePath, "PluginConfigs", "CustomJoinConfg.json"); } }
 		public static cjConfig Read()
 		{
-			if (!File.Exists(cfgPath))
-				return new cjConfig();
+            if (!File.Exists(cfgPath))
+            {
+                return new cjConfig();
+            }
 			using (var fs = new FileStream(cfgPath, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{
 				return Read(fs);

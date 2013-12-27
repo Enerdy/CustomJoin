@@ -35,36 +35,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Community.CsharpSqlite">
-      <HintPath>..\Refs\Community.CsharpSqlite.dll</HintPath>
-    </Reference>
-    <Reference Include="Community.CsharpSqlite.SQLiteClient">
-      <HintPath>..\Refs\Community.CsharpSqlite.SQLiteClient.dll</HintPath>
-    </Reference>
-    <Reference Include="HttpServer">
-      <HintPath>..\Refs\HttpServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Data.Sqlite">
-      <HintPath>..\Refs\Mono.Data.Sqlite.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\Refs\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Web">
-      <HintPath>..\Refs\MySql.Web.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Refs\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\Documents\0 Latest Tshock\ServerPlugins\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="TerrariaServer">
-      <HintPath>..\Refs\TerrariaServer.exe</HintPath>
+      <HintPath>..\..\..\..\Documents\0 Latest Tshock\TerrariaServer.exe</HintPath>
     </Reference>
     <Reference Include="TShockAPI">
-      <HintPath>..\Refs\TShockAPI.dll</HintPath>
+      <HintPath>..\..\..\..\Documents\0 Latest Tshock\ServerPlugins\TShockAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
